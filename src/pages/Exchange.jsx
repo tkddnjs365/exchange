@@ -205,7 +205,7 @@ function Exchange(props) {
                 </div>
             </div>
 
-            <div style={{ flex: 1, textAlign: 'center', width: '400px' }}>
+            <div style={{ flex: 1, textAlign: 'center', width: '100%' }}>
                 <h1>=</h1>
             </div>
 

@@ -10,7 +10,8 @@ body {
 
 /* 전체 컨테이너 */
 .top-class {
-    width: 90%; /* 컨테이너 너비 */
+    width: 90%;
+    margin: 0 auto; /* 가운데 정렬을 위해 필요한 설정 */
     max-width: 600px; /* 최대 너비 설정 (필요에 따라 조정 가능) */
     padding: 20px; /* 내부 여백 설정 */
     background-color: #ffffff; /* 배경색 설정 */
@@ -21,7 +22,6 @@ body {
 .main-class {
     flex: 1; /* 같은 공간 차지하도록 설정 */
     border: 1px solid black;
-    width: 400px;
     padding: 10px; /* 내부 padding 설정 */
     margin-top: 10px; /* 박스 간 간격 추가 */
 }
@@ -105,12 +105,8 @@ body {
     box-sizing: border-box; /* padding을 width에 포함 */
 }
 
-
-
-/* 모바일 화면 최적화 */
-/* 반응형 디자인 - 600px 이하 화면 크기 */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 370px) {
     .top-class {
-        width: 95%; /* 더욱 좁게 설정 */
+        width: 100%;
     }
 }
