@@ -24,12 +24,19 @@ function Exchange(props) {
     // 첫 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
     const handleFirstCurrencyChange = (e) => {
         const newCurr = e.target.id.replace(/^first-/, ''); // 체크박스의 id에서 'first-' 제거하여 새로운 통화 코드 생성
-        setCheckedFirstCurrencies((a) =>
-            a.includes(newCurr) // 선택된 통화 목록에 이미 포함되어 있는 경우
-                ? a.filter((curr) => curr !== newCurr) // 해당 통화를 제외하고 배열을 업데이트
-                : [...a, newCurr] // 선택된 통화 목록에 새로운 통화를 추가하여 배열을 업데이트
-        );
+        setCurr(newCurr); // 선택된 첫 번째 통화 업데이트+
+
+        //라디오 값을 바꾸면 값 계산 바로 해주기
+        boxStates.forEach((box, index) => {
+            if (newCurr && box.toCurr) {
+                const rate = currencies[newCurr][box.toCurr]; // 선택된 통화 간의 환율 가져오기
+                const newBoxStates = [...boxStates];
+                newBoxStates[index].convertedAmount = (parseFloat(amount) * rate).toFixed(3); // 변환된 금액 계산 및 상태 업데이트
+                setBoxStates(newBoxStates);
+            }
+        });
     };
+
 
     // 두 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
     const handleSecondCurrencyChange = (e) => {
@@ -49,9 +56,9 @@ function Exchange(props) {
         return Object.keys(currencies).map((cur) => (
             <div key={cur}>
                 <input
-                    type="checkbox"
+                    type="radio"
                     id={`first-${cur}`} // 첫 번째 통화 리스트 체크박스의 id 설정
-                    checked={checkedFirstCurrencies.includes(cur)} // 선택 여부를 checked 속성으로 관리
+                    checked={curr === cur} // 선택 여부를 checked 속성으로 관리
                     onChange={handleFirstCurrencyChange} // 체크박스 변경 시 handleFirstCurrencyChange 함수 호출
                 />
                 <label htmlFor={`first-${cur}`}>{cur}</label>
@@ -86,8 +93,6 @@ function Exchange(props) {
             </button>
         ));
     };
-
-
 
     // 선택된 항목을 드롭다운에 적용하는 함수
     const handleCurrencySelection = (currencyList, currency, boxIndex, isFirstCurrency) => {
