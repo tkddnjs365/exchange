@@ -10,9 +10,9 @@ body {
 
 /* 전체 컨테이너 */
 .top-class {
-    width: 100%;
-    margin: 0 auto; /* 가운데 정렬을 위해 필요한 설정 */
+    width: calc(100% - 40px); /* 전체 너비에서 padding 값을 고려한 계산 */
     max-width: 600px; /* 최대 너비 설정 (필요에 따라 조정 가능) */
+    margin: 0 auto; /* 가운데 정렬을 위해 필요한 설정 */
     padding: 20px; /* 내부 여백 설정 */
     background-color: #ffffff; /* 배경색 설정 */
     border-radius: 10px; /* 모서리 둥글게 설정 */
@@ -103,10 +103,4 @@ body {
     width: 48%; /* 체크리스트 컨테이너 내에서 각각 절반씩 차지 */
     padding: 10px; /* 내부 padding 설정 */
     box-sizing: border-box; /* padding을 width에 포함 */
-}
-
-@media only screen and (max-width: 370px) {
-    .top-class {
-        width: 100%;
-    }
 }

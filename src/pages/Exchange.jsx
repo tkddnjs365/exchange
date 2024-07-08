@@ -41,15 +41,25 @@ function Exchange(props) {
     // 두 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
     const handleSecondCurrencyChange = (e) => {
         const newCurr = e.target.id.replace(/^second-/, ''); // 체크박스의 id에서 'second-' 제거하여 새로운 통화 코드 생성
-        setCheckedSecondCurrencies((prev) =>
-            prev.includes(newCurr) // 선택된 통화 목록에 이미 포함되어 있는 경우
-                ? prev.filter((curr) => curr !== newCurr) // 해당 통화를 제외하고 배열을 업데이트
-                : [...prev, newCurr] // 선택된 통화 목록에 새로운 통화를 추가하여 배열을 업데이트
-        );
-        setBoxQty((prev) =>
-            checkedSecondCurrencies.includes(newCurr) ? prev - 1 : prev + 1
-        );
+        const isChecked = e.target.checked;
+
+        if (isChecked) {
+            setCheckedSecondCurrencies(prev => [...prev, newCurr]); // 선택된 통화 목록에 추가
+        } else {
+            setCheckedSecondCurrencies(prev => prev.filter(curr => curr !== newCurr)); // 선택 해제된 통화를 제외하고 업데이트
+        }
     };
+
+// useEffect를 사용하여 checkedSecondCurrencies가 업데이트 될 때 boxStates를 업데이트
+    useEffect(() => {
+
+        const newBoxStates = checkedSecondCurrencies.map(currency => ({
+            toCurr: currency,
+            convertedAmount: (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
+        }));
+        setBoxStates(newBoxStates);
+    }, [checkedSecondCurrencies, curr, amount]);
+
 
     // 드롭다운에 표시할 첫 번째 통화 선택 항목 렌더링
     const renderFirstCurrencyList = () => {
@@ -81,40 +91,6 @@ function Exchange(props) {
         ));
     };
 
-    // 선택된 항목들을 드롭다운 형태로 렌더링
-    const renderDropdownItems = (currencyList, boxIndex, isFirstCurrency) => {
-        return currencyList.map((cur) => (
-            <button
-                key={cur}
-                onClick={() => handleCurrencySelection(currencyList, cur, boxIndex, isFirstCurrency)}
-                className="dropdown-item" // 필요에 따라 클래스를 추가하여 스타일링할 수 있습니다.
-            >
-                {cur}
-            </button>
-        ));
-    };
-
-    // 선택된 항목을 드롭다운에 적용하는 함수
-    const handleCurrencySelection = (currencyList, currency, boxIndex, isFirstCurrency) => {
-        if (isFirstCurrency) {
-            setCurr(currency); // 첫 번째 통화 선택 상태 업데이트
-        } else {
-            const newBoxStates = [...boxStates];
-            newBoxStates[boxIndex].toCurr = currency;
-            setBoxStates(newBoxStates); // 두 번째 통화 선택 상태 업데이트
-
-            // 드롭다운 값 바꾸면 재계산
-            boxStates.forEach((box, index) => {
-                if (curr && box.toCurr) {
-                    const rate = currencies[curr][box.toCurr]; // 선택된 통화 간의 환율 가져오기
-                    const newBoxStates = [...boxStates];
-                    newBoxStates[index].convertedAmount = (parseFloat(amount) * rate).toFixed(3); // 변환된 금액 계산 및 상태 업데이트
-                    setBoxStates(newBoxStates);
-                }
-            });
-        }
-    };
-
     // 첫 번째 입력 필드 값 변경 시 호출되는 함수
     const handleAmountChange = (e) => {
         const inputAmount = e.target.value; // 입력된 값 가져오기
@@ -143,34 +119,27 @@ function Exchange(props) {
 
     // 박스 렌더링을 위한 함수
     const renderConversionBoxes = () => {
-        const boxes = [];
-        // boxQty에 맞게 boxStates 배열을 확장
-        while (boxStates.length < boxQty) {
-            boxStates.push({ toCurr: '', convertedAmount: '' });
-        }
-        for (let i = 0; i < boxQty; i++) {
-            boxes.push(
-                <div className="main-class" key={i}>
-                    <div className="dropdown">
-                        <button className="dropbtn">{boxStates[i]?.toCurr}</button>
-                        <div className="dropdown-content">
-                            {renderDropdownItems(checkedSecondCurrencies, i, false)}
-                        </div>
-                    </div>
-                    <div>
+        return boxStates.map((box, index) => (
+            <div className="main-class" key={index}>
+                <div className="dropdown">
+                    <button className="dropbtn">{box.toCurr}</button>
+                </div>
+                <div>
+                    {box.toCurr && (
                         <input
                             className="input-area"
                             type="number"
-                            value={boxStates[i]?.convertedAmount}
-                            onChange={(e) => handleConvertedAmountChange(e, i)}
+                            value={box.convertedAmount || ''}
+                            onChange={(e) => handleConvertedAmountChange(e, index)}
                         />
-                        <div className={"bottom-div"}>{currencies[boxStates[i]?.toCurr]?.unit || ''}</div> {/* 선택된 통화의 단위 표시 */}
-                    </div>
+                    )}
+                    <div className={"bottom-div"}>{currencies[box.toCurr]?.unit || ''}</div>
+                    {/* 선택된 통화의 단위 표시 */}
                 </div>
-            );
-        }
-        return boxes;
+            </div>
+        ));
     };
+
 
     return (
         <div className="top-class">
@@ -189,9 +158,6 @@ function Exchange(props) {
             <div className="main-class">
                 <div className="dropdown">
                     <button className="dropbtn">{curr}</button>
-                    <div className="dropdown-content">
-                        {renderDropdownItems(checkedFirstCurrencies, null, true)}
-                    </div>
                 </div>
 
                 <div>
@@ -201,12 +167,13 @@ function Exchange(props) {
                         value={amount}
                         onChange={handleAmountChange}
                     />
-                    <div className={"bottom-div"}>{currencies[curr]?.unit || ''}</div> {/* 선택된 통화의 단위 표시 */}
+                    <div className={"bottom-div"}>{currencies[curr]?.unit || ''}</div>
+                    {/* 선택된 통화의 단위 표시 */}
                 </div>
             </div>
 
-            <div style={{ flex: 1, textAlign: 'center', width: '100%' }}>
-                <h1>=</h1>
+            <div style={{flex: 1, textAlign: 'center', width: '100%'}}>
+                <h1 style={{margin: 0}}>=</h1>
             </div>
 
             {renderConversionBoxes()} {/* 박스 렌더링 함수 호출 */}
