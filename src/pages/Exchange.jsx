@@ -77,7 +77,7 @@ function Exchange(props) {
     // 선택된 항목들을 드롭다운 형태로 렌더링
     const renderDropdownItems = (currencyList, boxIndex, isFirstCurrency) => {
         return currencyList.map((cur) => (
-            <a href="#" key={cur} onClick={() => handleCurrencySelection(currencyList, cur, boxIndex, isFirstCurrency)}>
+            <a key={cur} onClick={() => handleCurrencySelection(currencyList, cur, boxIndex, isFirstCurrency)}>
                 {cur}
             </a>
         ));
