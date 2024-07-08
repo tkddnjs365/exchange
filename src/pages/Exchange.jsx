@@ -53,7 +53,7 @@ function Exchange(props) {
 
         const newBoxStates = checkedSecondCurrencies.map(currency => ({
             toCurr: currency,
-            convertedAmount: (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
+            convertedAmount: curr == '' ? '' : (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
         }));
         setBoxStates(newBoxStates);
     }, [checkedSecondCurrencies, amount, curr, currencies]);
