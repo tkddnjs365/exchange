@@ -97,6 +97,16 @@ function Exchange(props) {
             const newBoxStates = [...boxStates];
             newBoxStates[boxIndex].toCurr = currency;
             setBoxStates(newBoxStates); // 두 번째 통화 선택 상태 업데이트
+
+            // 드롭다운 값 바꾸면 재계산
+            boxStates.forEach((box, index) => {
+                if (curr && box.toCurr) {
+                    const rate = currencies[curr][box.toCurr]; // 선택된 통화 간의 환율 가져오기
+                    const newBoxStates = [...boxStates];
+                    newBoxStates[index].convertedAmount = (parseFloat(amount) * rate).toFixed(3); // 변환된 금액 계산 및 상태 업데이트
+                    setBoxStates(newBoxStates);
+                }
+            });
         }
     };
 
