@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/Exchange.css'; // Exchange 컴포넌트에 적용할 스타일 시트를 임포트합니다.
 import currenciesData from '../json/Exchange.json'; // 환율 데이터가 포함된 JSON 파일을 임포트합니다.
 
-function Exchange(props) {
+function Exchange() {
     const [curr, setCurr] = useState(''); // 선택된 첫 번째 통화를 저장하는 상태
     const [currencies, setCurrencies] = useState({}); // 환율 데이터를 저장하는 상태
     const [checkedSecondCurrencies, setCheckedSecondCurrencies] = useState([]); // 두 번째 통화 선택 항목을 저장하는 상태
@@ -18,45 +18,6 @@ function Exchange(props) {
     useEffect(() => {
         setCurrencies(currenciesData);
     }, []);
-
-    // 첫 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
-    const handleFirstCurrencyChange = (e) => {
-        const newCurr = e.target.id.replace(/^first-/, ''); // 체크박스의 id에서 'first-' 제거하여 새로운 통화 코드 생성
-        setCurr(newCurr); // 선택된 첫 번째 통화 업데이트+
-
-        //라디오 값을 바꾸면 값 계산 바로 해주기
-        boxStates.forEach((box, index) => {
-            if (newCurr && box.toCurr) {
-                const rate = currencies[newCurr][box.toCurr]; // 선택된 통화 간의 환율 가져오기
-                const newBoxStates = [...boxStates];
-                newBoxStates[index].convertedAmount = (parseFloat(amount) * rate).toFixed(3); // 변환된 금액 계산 및 상태 업데이트
-                setBoxStates(newBoxStates);
-            }
-        });
-    };
-
-
-    // 두 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
-    const handleSecondCurrencyChange = (e) => {
-        const newCurr = e.target.id.replace(/^second-/, ''); // 체크박스의 id에서 'second-' 제거하여 새로운 통화 코드 생성
-        const isChecked = e.target.checked;
-
-        if (isChecked) {
-            setCheckedSecondCurrencies(prev => [...prev, newCurr]); // 선택된 통화 목록에 추가
-        } else {
-            setCheckedSecondCurrencies(prev => prev.filter(curr => curr !== newCurr)); // 선택 해제된 통화를 제외하고 업데이트
-        }
-    };
-
-    // useEffect를 사용하여 checkedSecondCurrencies가 업데이트 될 때 boxStates를 업데이트
-    useEffect(() => {
-
-        const newBoxStates = checkedSecondCurrencies.map(currency => ({
-            toCurr: currency,
-            convertedAmount: curr == '' ? '' : (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
-        }));
-        setBoxStates(newBoxStates);
-    }, [checkedSecondCurrencies, amount, curr, currencies]);
 
 
     // 드롭다운에 표시할 첫 번째 통화 선택 항목 렌더링
@@ -88,6 +49,44 @@ function Exchange(props) {
             </div>
         ));
     };
+
+    // 첫 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
+    const handleFirstCurrencyChange = (e) => {
+        const newCurr = e.target.id.replace(/^first-/, ''); // 체크박스의 id에서 'first-' 제거하여 새로운 통화 코드 생성
+        setCurr(newCurr); // 선택된 첫 번째 통화 업데이트+
+
+        //라디오 값을 바꾸면 값 계산 바로 해주기
+        boxStates.forEach((box, index) => {
+            if (newCurr && box.toCurr) {
+                const rate = currencies[newCurr][box.toCurr]; // 선택된 통화 간의 환율 가져오기
+                const newBoxStates = [...boxStates];
+                newBoxStates[index].convertedAmount = (parseFloat(amount) * rate).toFixed(3); // 변환된 금액 계산 및 상태 업데이트
+                setBoxStates(newBoxStates);
+            }
+        });
+    };
+
+    // 두 번째 통화 선택 항목을 클릭했을 때 호출되는 함수
+    const handleSecondCurrencyChange = (e) => {
+        const newCurr = e.target.id.replace(/^second-/, ''); // 체크박스의 id에서 'second-' 제거하여 새로운 통화 코드 생성
+        const isChecked = e.target.checked;
+
+        if (isChecked) {
+            setCheckedSecondCurrencies(prev => [...prev, newCurr]); // 선택된 통화 목록에 추가
+        } else {
+            setCheckedSecondCurrencies(prev => prev.filter(curr => curr !== newCurr)); // 선택 해제된 통화를 제외하고 업데이트
+        }
+    };
+
+    // useEffect를 사용하여 checkedSecondCurrencies가 업데이트 될 때 boxStates를 업데이트
+    useEffect(() => {
+
+        const newBoxStates = checkedSecondCurrencies.map(currency => ({
+            toCurr: currency,
+            convertedAmount: curr === '' ? '' : (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
+        }));
+        setBoxStates(newBoxStates);
+    }, [checkedSecondCurrencies, amount, curr, currencies]);
 
     // 첫 번째 입력 필드 값 변경 시 호출되는 함수
     const handleAmountChange = (e) => {
@@ -131,14 +130,22 @@ function Exchange(props) {
                             onChange={(e) => handleConvertedAmountChange(e, index)}
                         />
                     )}
-                    <div className={"bottom-div"}>{currencies[box.toCurr]?.unit || ''}</div>
+                    <div className={"bottom-div"}>
+                        {formatNumber(box.convertedAmount || '')} {currencies[box.toCurr]?.unit || ''}
+                    </div>
                     {/* 선택된 통화의 단위 표시 */}
                 </div>
             </div>
         ));
     };
 
-
+    // 숫자 포맷팅 함수
+    const formatNumber = (number) => {
+        if (number === '' || isNaN(number)) {
+            return '';
+        }
+        return new Intl.NumberFormat().format(number);
+    };
     return (
         <div className="top-class">
             <div className="checklist-container">
@@ -148,7 +155,7 @@ function Exchange(props) {
                 </div>
 
                 <div className="checklist">
-                    <h3>계산될 화폐</h3>
+                    <h3>계산 화폐</h3>
                     {renderSecondCurrencyList()}
                 </div>
             </div>
@@ -165,8 +172,7 @@ function Exchange(props) {
                         value={amount}
                         onChange={handleAmountChange}
                     />
-                    <div className={"bottom-div"}>{currencies[curr]?.unit || ''}</div>
-                    {/* 선택된 통화의 단위 표시 */}
+                    <div className={"bottom-div"}>{formatNumber(amount)} {currencies[curr]?.unit || ''}</div> {/* 입력된 금액을 포맷팅하여 표시 */}
                 </div>
             </div>
 
