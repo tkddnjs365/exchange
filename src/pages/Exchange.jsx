@@ -48,7 +48,7 @@ function Exchange(props) {
         }
     };
 
-// useEffect를 사용하여 checkedSecondCurrencies가 업데이트 될 때 boxStates를 업데이트
+    // useEffect를 사용하여 checkedSecondCurrencies가 업데이트 될 때 boxStates를 업데이트
     useEffect(() => {
 
         const newBoxStates = checkedSecondCurrencies.map(currency => ({
@@ -56,7 +56,7 @@ function Exchange(props) {
             convertedAmount: (parseFloat(amount) * currencies[curr][currency]).toFixed(3),
         }));
         setBoxStates(newBoxStates);
-    }, [checkedSecondCurrencies, curr, amount]);
+    }, [checkedSecondCurrencies, amount, curr, currencies]);
 
 
     // 드롭다운에 표시할 첫 번째 통화 선택 항목 렌더링
