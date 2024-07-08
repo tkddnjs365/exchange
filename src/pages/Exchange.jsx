@@ -5,7 +5,7 @@ import currenciesData from '../json/Exchange.json'; // 환율 데이터가 포�
 function Exchange(props) {
     const [curr, setCurr] = useState(''); // 선택된 첫 번째 통화를 저장하는 상태
     const [currencies, setCurrencies] = useState({}); // 환율 데이터를 저장하는 상태
-    const [checkedFirstCurrencies, setCheckedFirstCurrencies] = useState([]); // 첫 번째 통화 선택 항목을 저장하는 상태
+    const [checkedFirstCurrencies] = useState([]); // 첫 번째 통화 선택 항목을 저장하는 상태
     const [checkedSecondCurrencies, setCheckedSecondCurrencies] = useState([]); // 두 번째 통화 선택 항목을 저장하는 상태
     const [amount, setAmount] = useState(''); // 입력된 금액을 저장하는 상태
     const [boxQty, setBoxQty] = useState(0); // 값 나오는 박스 갯수
