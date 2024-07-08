@@ -105,30 +105,9 @@ body {
 
 
 /* 모바일 화면 최적화 */
-
+/* 반응형 디자인 - 600px 이하 화면 크기 */
 @media only screen and (max-width: 600px) {
     .top-class {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .main-class {
-        margin: 5px 0;
-    }
-
-    .dropdown {
-        width: 100%;
-    }
-
-    .dropbtn {
-        width: 100%;
-    }
-
-    .dropdown-content {
-        min-width: 100%;
-    }
-
-    .input-area {
-        width: 100%;
+        width: 95%; /* 더욱 좁게 설정 */
     }
 }
