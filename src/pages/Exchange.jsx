@@ -161,12 +161,12 @@ function Exchange(props) {
         <div className="top-class">
             <div className="checklist-container">
                 <div className="checklist">
-                    <h3>첫 번째 통화 선택 리스트</h3>
+                    <h3>메인 화폐</h3>
                     {renderFirstCurrencyList()}
                 </div>
 
                 <div className="checklist">
-                    <h3>두 번째 통화 선택 리스트</h3>
+                    <h3>계산될 화폐</h3>
                     {renderSecondCurrencyList()}
                 </div>
             </div>
