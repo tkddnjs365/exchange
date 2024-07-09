@@ -24,9 +24,6 @@ function Exchange() {
     const fetchExchangeRate = async (baseCurrency) => {
         try {
             const response = await fetch(`https://v6.exchangerate-api.com/v6/e823bddd368a1b486559f227/latest/${baseCurrency}`);
-            if (!response.ok) {
-                throw new Error('API 호출 실패');
-            }
             const data = await response.json();
             return data.conversion_rates;
         } catch (error) {
@@ -111,7 +108,7 @@ function Exchange() {
         } else {
             setBoxStates([]);
         }
-    }, [amount, currList]);
+    }, [amount, checkedSecondCurrencies, curr, currList]);
 
     // 첫 번째 입력 필드 값 변경 시 호출되는 함수
     const handleAmountChange = (e) => {
@@ -131,7 +128,7 @@ function Exchange() {
     };
 
     // 두 번째 입력 필드 값 변경 시 호출되는 함수
-    const handleConvertedAmountChange = (e, boxIndex) => {
+    const handleConvertedAmountChange = (/*e, boxIndex*/) => {
         // const inputConvertedAmount = e.target.value; // 입력된 값 가져오기
         // const newBoxStates = [...boxStates];
         // newBoxStates[boxIndex].convertedAmount = inputConvertedAmount; // 변환된 금액 상태 업데이트
