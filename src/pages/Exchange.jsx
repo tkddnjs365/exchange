@@ -179,12 +179,12 @@ function Exchange() {
         <div className="top-class">
             <div className="checklist-container">
                 <div className="checklist">
-                    <h3>메인 화폐</h3>
+                    <h3 style={ {marginBottom:'5px'}}>메인 화폐</h3>
                     {renderMainCurrencyRadio()}
                 </div>
 
                 <div className="checklist">
-                    <h3>계산 화폐</h3>
+                    <h3 style={ {marginBottom:'5px'}}>계산 화폐</h3>
                     {renderConversionCurrencyCheckboxes()}
                 </div>
             </div>
